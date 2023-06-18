@@ -4,32 +4,32 @@ const PinSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
+      require: true,
     },
     title: {
       type: String,
-      required: true,
+      require: true,
       min: 3,
       max: 60,
     },
     desc: {
       type: String,
-      required: true,
+      require: true,
       min: 3,
     },
     rating: {
       type: Number,
-      required: true,
+      require: true,
       min: 0,
       max: 5,
     },
     long: {
       type: Number,
-      required: true,
+      require: true,
     },
     lat: {
       type: Number,
-      required: true,
+      require: true,
     },
   },
   { timestamps: true }

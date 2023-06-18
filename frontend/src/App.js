@@ -4,61 +4,89 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './app.css';
 import { Marker, Popup } from "react-map-gl";
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Room, Star, StarBorder } from "@material-ui/icons";
-// import axios from "axios";
-// import { format } from "timeago.js";
+import axios from "axios";
+import { format } from "timeago.js";
 // import Register from "./components/Register";
 // import Login from "./components/Login";
 
 function App() {
+  const [pins, setPins] = useState([]);
+  const [currentPlaceId , setCurrentPlaceId]=useState(null)
+
+  useEffect(() => {
+    const getPins = async () => {
+      try {
+        const res = await axios.get("/pins");
+        setPins(res.data)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getPins()
+  }, []);
+
+  const handleMarkerClick = (id) => {
+    setCurrentPlaceId(id)
+  }
+
   return (
     <div className="App">
       <Map mapLib={maplibregl}
         initialViewState={{
           longitude: 81.878357,
           latitude: 25.473034,
-          zoom: 14
+          zoom: 10
         }}
+
         style={{ width: "100%", height: "100vh " }}
         mapStyle="https://api.maptiler.com/maps/streets/style.json?key=5WaNep1zZFBIl1QeDFcp"
       >
         <NavigationControl position="top-left" />
-
-        <Marker
-          latitude={25.483498}
-          longitude={81.862732}
-          offsetLeft={-20}
-          offsetTop={-10}
-        >
-          <Room style={{ color: "red" }} />
-        </Marker>
-
-        <Popup
-          latitude={25.483498}
-          longitude={81.862732}
-          closeButton={true}
-          closeOnClick={false}
-          anchor="top-left"
-        >
-          <div className="card">
-            <label>Place</label>
-            <h4 className="place">MNNIT</h4>
-            <label>Review</label>
-            <p className="description">Best College. I love it.</p>
-            <label>Rating</label>
-            <div className="stars">
-              <Star className="star" />
-              <Star className="star" />
-              <Star className="star" />
-              <Star className="star" />
-              <Star className="star" />
-            </div>
-            <label>Information</label>
-            <span className="username">Created by <b>Sunidhi</b></span>
-            <span className="date">1 hour ago</span>
-          </div>
-        </Popup>
+        {pins.map(p => (
+          <>
+            <Marker
+              latitude={p.lat}
+              longitude={p.long}
+              offsetLeft={-20}
+              offsetTop={-10}
+            >
+              <Room style={{ color: "red", cursor:"pointer" }} 
+                onClick={()=>handleMarkerClick(p._id)}
+              />
+            </Marker>
+            {p._id === currentPlaceId && (
+             
+            <Popup
+              latitude={p.lat}
+              longitude={p.long}
+              closeButton={true}
+              closeOnClick={false}
+              anchor="top-left"
+              onClose={()=>setCurrentPlaceId(null)}
+            >
+              <div className="card">
+                <label>Place</label>
+                <h4 className="place">{p.title}</h4>
+                <label>Review</label>
+                <p className="desc">{p.desc}</p>
+                <label>Rating</label>
+                <div className="stars">
+                  <Star className="star" />
+                  <Star className="star" />
+                  <Star className="star" />
+                  <Star className="star" />
+                  <Star className="star" />
+                </div>
+                <label>Information</label>
+                <span className="username">Created by <b>{p.username}</b></span>
+                <span className="date">{format(p.createdAt)}</span>
+              </div>
+            </Popup>
+            )}
+          </>
+        ))}
       </Map>
     </div>
   );
