@@ -3,7 +3,7 @@ const mongoose = require ("mongoose")
 const app = express()
 const dotenv = require("dotenv");
 const pinRoute = require("./routes/pins");
-// const userRoute = require("./routes/users")
+const userRoute = require("./routes/users")
 
 dotenv.config();
 
@@ -19,6 +19,7 @@ mongoose
  .catch(err => console.log(err));
 
 app.use("/pins", pinRoute);
+app.use("/users", userRoute);
 
 app.listen(8800,()=>{
     console.log(":Backend is running")
