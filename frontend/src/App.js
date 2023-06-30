@@ -5,7 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import './app.css';
 import { Marker, Popup } from "react-map-gl";
 import { useEffect, useState } from "react";
-import { Room, Star, StarBorder } from "@material-ui/icons";
+import { Room, Close, Star, StarBorder } from "@material-ui/icons";
 import axios from "axios";
 // import { format } from "timeago.js";
 // import Register from "./components/Register";
@@ -18,7 +18,7 @@ function App() {
   useEffect(() => {
     const getPins = async () => {
       try {
-        const res = await axios.get("/pins");
+        const res = await axios.get("http://localhost:8800/pins");
         setPins(res.data)
       } catch (err) {
         console.log(err)
@@ -28,7 +28,8 @@ function App() {
   }, []);
 
   const handleMarkerClick = (id) => {
-    setCurrentPlaceId(id)
+    setCurrentPlaceId(id);
+    console.log(currentPlaceId);
   }
 
   return (
@@ -61,11 +62,11 @@ function App() {
             <Popup
               latitude={p.lat}
               longitude={p.long}
-              closeButton={true}
+              closeButton={false}
               closeOnClick={false}
               anchor="top-left"
-              onClose={()=>setCurrentPlaceId(null)}
             >
+              <Close onClick={()=>handleMarkerClick(null)} className='close'/>
               <div className="card">
                 <label>Place</label>
                 <h4 className="place">{p.title}</h4>

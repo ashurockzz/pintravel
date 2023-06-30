@@ -5,10 +5,12 @@ const PinSchema = new mongoose.Schema(
     username: {
       type: String,
       require: true,
+      unique:true
     },
     title: {
       type: String,
       require: true,
+      unique: true,
       min: 3,
       max: 60,
     },
@@ -35,4 +37,4 @@ const PinSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Pin", PinSchema);
+module.exports = mongoose.model("pins", PinSchema);
